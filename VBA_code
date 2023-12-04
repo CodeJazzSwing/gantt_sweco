@@ -1,0 +1,48 @@
+Sub ScreenshotExcelToPPT_1459()
+
+    ActiveWorkbook.Save
+    ' Define Excel objects
+    Dim ExcelApp As Object
+    Dim ExcelWorkbook As Object
+    Dim ExcelWorksheet As Object
+
+    ' Define PowerPoint objects
+    Dim PowerPointApp As Object
+    Dim myPresentation As Object
+    Dim mySlide As Object
+
+    ' Start Excel and open the workbook.
+    Set ExcelApp = CreateObject("Excel.Application")
+    Set ExcelWorkbook = ExcelApp.Workbooks.Open("C:\Excel_Gantt\Gantt-test 11.1.xlsm")
+    Set ExcelWorksheet = ExcelWorkbook.Sheets("Gantt")
+    
+
+    
+    ' Determine the last row in column A
+    Dim LastRow As Long
+    LastRow = ExcelWorksheet.Cells(ExcelWorksheet.Rows.Count, "F").End(xlUp).Row
+
+    ' Show the range of cells from A1 to the last used row in column BH.
+    ' Add 1 to LastRow to include one more row.
+    ExcelWorksheet.Range("F7:BI" & LastRow + 1).Select
+
+    ' Copy the range of cells as a picture.
+    ExcelWorksheet.Range("F7:BI" & LastRow + 1).CopyPicture Appearance:=xlScreen, Format:=xlPicture
+
+    ' Start PowerPoint and create a new presentation.
+    Set PowerPointApp = CreateObject("PowerPoint.Application")
+    PowerPointApp.Visible = True
+    Set myPresentation = PowerPointApp.Presentations.Add
+
+    ' Add a new slide where we will paste the picture.
+    Set mySlide = myPresentation.Slides.Add(1, 11) '11 = ppLayoutBlank
+
+   ' Paste the picture onto the slide.
+    mySlide.Shapes.Paste
+
+    ' Clean up
+    ExcelWorkbook.Close SaveChanges:=False
+    Set ExcelWorksheet = Nothing
+    Set ExcelWorkbook = Nothing
+    Set ExcelApp = Nothing
+End Sub
